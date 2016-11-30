@@ -1,0 +1,79 @@
+<App Background="#eee">
+	<Router ux:Name="router" />
+	<DockPanel>
+
+		<JavaScript File="MainView.js"/>
+
+
+		<StackPanel Dock="Top">
+			<!-- 그라데이션 -->
+			<LinearGradient StartPoint="0,0" EndPoint="1,0.75">
+				<GradientStop Offset="0" Color="#FC3C47" />
+				<GradientStop Offset="1" Color="#B73070" />
+			</LinearGradient>
+			<StatusBarBackground/>
+			<Fuse.iOS.StatusBarConfig Style="Light"/>
+		<!-- 뒤로가기 버튼 클릭 -->
+	    <OnKeyPress Key="BackButton" Handler="{backButtonClicked}" />
+			<Panel Dock="Top" Height="50">
+
+				<Button ux:Name="backButton" Opacity="0" Padding="15" Clicked="{goBack}" Alignment="Left">
+					<Image File="Assets/Icons/arrow-left-white.png" Color="#fff" />
+				</Button>
+
+				<Text Value="{currentPageTitle}" Alignment="Center" FontSize="{currentPageTitleSize}" TextColor="#FFF"/>
+
+			</Panel>
+
+			<!-- 검색 -->
+			<DockPanel ux:Name="searchBox" Background="#fff">
+				<TextInput ValueChanged="{setSearchText}" />
+				<Button Padding="10" Clicked="{search}" Dock="Right">
+					<Image Width="20" File="Assets/Icons/search.png" Color="#ccc" />
+				</Button>
+			</DockPanel>
+		</StackPanel>
+		
+		<BottomBarBackground Dock="Bottom" />
+		
+		<DirectNavigation Active="{currentPageHandle}"/>
+
+		<Page Name="pagesList">
+			<ScrollView Background="#eee">
+				<StackPanel>
+					<Each Items="{pages}">
+						<DockPanel Clicked="{pageButtonClicked}" Margin="0,1" Padding="7,7,0,7" Background="#fff">
+							<AddingAnimation>
+								<Move RelativeTo="Size" X="1" Duration="{duration}" Easing="CircularIn" />
+							</AddingAnimation>
+
+							<Image Width="140" Height="80" Dock="Left" Url="{thumbnail}" StretchMode="UniformToFill" />
+
+							<StackPanel Margin="7,0,0,0">
+								<Text TextWrapping="Wrap" Value="{title}" FontSize="16" />
+								<Text Value="{channelTitle}" FontSize="16" TextColor="#999" />
+							</StackPanel>
+						</DockPanel>
+					</Each>
+				</StackPanel>
+			</ScrollView>
+
+			<ExitingAnimation>
+				<Move X="-1" RelativeTo="Size" Duration="0.3" Easing="CircularInOut"/>
+				<Change backButton.Opacity="1" Duration="0.3"/>
+			</ExitingAnimation>
+		</Page>
+		
+		<Each Items="{pages}">
+			<Page Name="{handle}">
+				<NativeViewHost>
+					<WebView Url="{embed}"/>
+				</NativeViewHost>
+				<ExitingAnimation>
+					<Move X="1" RelativeTo="Size" Duration="0.3" Easing="CircularInOut"/>
+				</ExitingAnimation>
+			</Page>
+		</Each>
+
+	</DockPanel>
+</App>
